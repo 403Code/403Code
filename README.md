@@ -1,6 +1,5 @@
 # 💫 About Me:
 ![Intro](https://raw.githubusercontent.com/403Code/403Code/main/picture/intro.svg) </br>
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=PT+Sans+Narrow&size=19&pause=1000&width=521&lines=Well%2C+my+name+is+Nanta%2C+I'm+20+years+old.;I+like+Python%2C+Javascript%2C+PHP+and+several+programming+languages+that+I+like.;I+come+from+Indonesia%2C+precisely+in+East+Java.;I+started+to+get+interested+in+learning+programming+languages+%E2%80%8B%E2%80%8Bin+2019.;and...+I'm+still+learning+now%3Av)](https://git.io/typing-svg)
 
 ## 🌐 Socials:
 [![Facebook](https://img.shields.io/badge/Facebook-%231877F2.svg?logo=Facebook&logoColor=white)](https://facebook.com/dementorize) [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/dementorize) [![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?logo=Twitter&logoColor=white)](https://twitter.com/r1zemary) [![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?logo=YouTube&logoColor=white)](https://youtube.com/@sendalmantan) 
