@@ -10,7 +10,7 @@
 ![](https://github-readme-stats.vercel.app/api?username=403Code&theme=dark&hide_border=false&include_all_commits=true&count_private=false)<br/>
 ![](https://github-readme-streak-stats.herokuapp.com/?user=403Code&theme=dark&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=403Code&theme=dark&hide_border=false&include_all_commits=true&count_private=false&layout=compact)<br/>
-![](https://api.visitorbadge.io/api/combined?path=403Code&label=Profile%20Views%20%5BTotal%20%2F%20Daily%5D&labelColor=%23d9e3f0&countColor=%23555555&style=flat-square&labelStyle=upper)
+![](https://api.visitorbadge.io/api/combined?path=403Code&label=Profile%20Views%20%5BDaily%20%2F%20Total%5D&labelColor=%23d9e3f0&countColor=%23555555&style=flat-square&labelStyle=upper)
 ## 🏆 GitHub Trophies
 ![](https://github-profile-trophy.vercel.app/?username=403Code&theme=radical&no-frame=false&no-bg=true&margin-w=4)
 
