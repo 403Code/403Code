@@ -1,126 +1,209 @@
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Server Status Overlay</title>
+
+<title>Gothic Server Status</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  body {
-    margin: 0;
-    padding: 10px;
-    background: transparent;
-    font-family: Arial, sans-serif;
-  }
+body {
+  margin: 0;
+  padding: 15px;
+  background: transparent;
+  font-family: 'Cinzel', serif;
+}
 
-  .server-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: rgba(15, 23, 42, 0.92);
-    color: white;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
+.gothic-panel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 17px 25px;
+  min-width: 350px;
+  background: linear-gradient(
+    135deg,
+    rgba(12,12,15,.97),
+    rgba(24,22,26,.96),
+    rgba(8,8,10,.97)
+  );
 
-  .indicator {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #22c55e;
-  }
+  border: 1px solid #62504a;
+  outline: 1px solid rgba(180,145,120,.18);
+  outline-offset: 4px;
 
-  .badge {
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 14px;
-  }
+  clip-path: polygon(
+    0 12%, 5% 12%, 8% 0,
+    92% 0, 95% 12%, 100% 12%,
+    100% 88%, 95% 88%, 92% 100%,
+    8% 100%, 5% 88%, 0 88%
+  );
 
-  .public {
-    color: #86efac;
-    background: #14532d;
-  }
+  box-shadow:
+    0 0 20px rgba(120,0,0,.2),
+    inset 0 0 25px rgba(0,0,0,.9);
+}
 
-  .private {
-    color: #fca5a5;
-    background: #7f1d1d;
-  }
+.gothic-panel::before,
+.gothic-panel::after {
+  content: "✦";
+  position: absolute;
+  color: #a52d35;
+  font-size: 13px;
+}
 
-  .offline {
-    color: #cbd5e1;
-    background: #334155;
-  }
+.gothic-panel::before {
+  top: 5px;
+  left: 12px;
+}
+
+.gothic-panel::after {
+  bottom: 5px;
+  right: 12px;
+}
+
+.indicator-frame {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #77615c;
+  transform: rotate(45deg);
+}
+
+.indicator {
+  width: 11px;
+  height: 11px;
+  background: #22c55e;
+  box-shadow: 0 0 12px currentColor;
+  transform: rotate(-45deg);
+  border-radius: 50%;
+}
+
+.server-label {
+  color: #c9b9ae;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(180,150,130,.3);
+}
+
+.status {
+  min-width: 110px;
+  padding: 7px 13px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border: 1px solid;
+  background: rgba(0,0,0,.45);
+}
+
+.public {
+  color: #55e8a1;
+  border-color: #247b54;
+  text-shadow: 0 0 10px rgba(34,197,94,.6);
+  box-shadow: inset 0 0 12px rgba(34,197,94,.1);
+}
+
+.private {
+  color: #ff5967;
+  border-color: #8f2732;
+  text-shadow: 0 0 10px rgba(239,68,68,.6);
+  box-shadow: inset 0 0 12px rgba(239,68,68,.1);
+}
+
+.offline {
+  color: #aaa;
+  border-color: #555;
+}
+
+.indicator.public-dot {
+  background: #22c55e;
+  color: #22c55e;
+}
+
+.indicator.private-dot {
+  background: #ef4444;
+  color: #ef4444;
+}
+
+.indicator.offline-dot {
+  background: #888;
+  color: #888;
+}
 </style>
 </head>
 
 <body>
 
-<div class="server-status">
-  <span class="indicator" id="indicator"></span>
-  <span>SERVER:</span>
-  <span class="badge offline" id="status">LOADING</span>
+<div class="gothic-panel">
+
+  <div class="indicator-frame">
+    <div class="indicator" id="indicator"></div>
+  </div>
+
+  <div class="server-label">SERVER:</div>
+
+  <div class="status offline" id="status">
+    LOADING
+  </div>
+
 </div>
 
 <script>
-  // GANTI DENGAN URL FIREBASE MILIKMU
-  const DATABASE_URL =
-    "https://overlay-stream-c8e76-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const DATABASE_URL =
+  "https://overlay-stream-c8e76-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
-  async function updateStatus() {
-    try {
-      const response = await fetch(
-        `${DATABASE_URL}/serverStatus.json`,
-        { cache: "no-store" }
-      );
+async function updateStatus() {
+  const badge = document.getElementById("status");
+  const indicator = document.getElementById("indicator");
 
-      if (!response.ok) throw new Error("Database error");
+  try {
+    const response = await fetch(
+      `${DATABASE_URL}/serverStatus/status.json`,
+      { cache: "no-store" }
+    );
 
-      const data = await response.json();
-      const status = data?.status?.toUpperCase();
+    if (!response.ok) throw new Error("Database error");
 
-      const badge = document.getElementById("status");
-      const indicator = document.getElementById("indicator");
+    const value = (await response.json())?.toUpperCase();
 
-      badge.className = "badge";
+    badge.className = "status";
+    indicator.className = "indicator";
 
-      if (status === "PUBLIC") {
-        badge.textContent = "PUBLIC";
-        badge.classList.add("public");
-        indicator.style.background = "#22c55e";
-      } else if (status === "PRIVATE") {
-        badge.textContent = "PRIVATE";
-        badge.classList.add("private");
-        indicator.style.background = "#ef4444";
-      } else {
-        badge.textContent = "UNKNOWN";
-        badge.classList.add("offline");
-        indicator.style.background = "#94a3b8";
-      }
+    if (value === "PUBLIC") {
+      badge.textContent = "PUBLIC";
+      badge.classList.add("public");
+      indicator.classList.add("public-dot");
 
-    } catch (error) {
-      console.error("Gagal mengambil status:", error);
+    } else if (value === "PRIVATE") {
+      badge.textContent = "PRIVATE";
+      badge.classList.add("private");
+      indicator.classList.add("private-dot");
 
-      const badge = document.getElementById("status");
-      badge.textContent = "CONNECTION ERROR";
-      badge.className = "badge offline";
-      document.getElementById("indicator").style.background =
-        "#94a3b8";
+    } else {
+      throw new Error("Invalid server status");
     }
+
+  } catch (error) {
+    badge.textContent = "OFFLINE";
+    badge.className = "status offline";
+    indicator.className = "indicator offline-dot";
+
+    console.error(error);
   }
+}
 
-  // Ambil status pertama kali
-  updateStatus();
-
-  // Update setiap 5 detik
-  setInterval(updateStatus, 5000);
+updateStatus();
+setInterval(updateStatus, 5000);
 </script>
 
 </body>
