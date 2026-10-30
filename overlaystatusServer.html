@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server Status Overlay</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 10px;
+    background: transparent;
+    font-family: Arial, sans-serif;
+  }
+
+  .server-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.92);
+    color: white;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .indicator {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+
+  .badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .public {
+    color: #86efac;
+    background: #14532d;
+  }
+
+  .private {
+    color: #fca5a5;
+    background: #7f1d1d;
+  }
+
+  .offline {
+    color: #cbd5e1;
+    background: #334155;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="server-status">
+  <span class="indicator" id="indicator"></span>
+  <span>SERVER:</span>
+  <span class="badge offline" id="status">LOADING</span>
+</div>
+
+<script>
+  // GANTI DENGAN URL FIREBASE MILIKMU
+  const DATABASE_URL =
+    "https://overlay-stream-c8e76-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+  async function updateStatus() {
+    try {
+      const response = await fetch(
+        `${DATABASE_URL}/serverStatus.json`,
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) throw new Error("Database error");
+
+      const data = await response.json();
+      const status = data?.status?.toUpperCase();
+
+      const badge = document.getElementById("status");
+      const indicator = document.getElementById("indicator");
+
+      badge.className = "badge";
+
+      if (status === "PUBLIC") {
+        badge.textContent = "PUBLIC";
+        badge.classList.add("public");
+        indicator.style.background = "#22c55e";
+      } else if (status === "PRIVATE") {
+        badge.textContent = "PRIVATE";
+        badge.classList.add("private");
+        indicator.style.background = "#ef4444";
+      } else {
+        badge.textContent = "UNKNOWN";
+        badge.classList.add("offline");
+        indicator.style.background = "#94a3b8";
+      }
+
+    } catch (error) {
+      console.error("Gagal mengambil status:", error);
+
+      const badge = document.getElementById("status");
+      badge.textContent = "CONNECTION ERROR";
+      badge.className = "badge offline";
+      document.getElementById("indicator").style.background =
+        "#94a3b8";
+    }
+  }
+
+  // Ambil status pertama kali
+  updateStatus();
+
+  // Update setiap 5 detik
+  setInterval(updateStatus, 5000);
+</script>
+
+</body>
+</html>
